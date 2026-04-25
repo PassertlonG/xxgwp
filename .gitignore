@@ -1,0 +1,25 @@
+# Rust
+backend/target/
+backend/Cargo.lock
+
+# Node
+node_modules/
+**/node_modules/
+dist/
+.taro-cache/
+
+# Environment
+.env
+*.local
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Factory
+.factory/
+
+# OS
+.DS_Store
+Thumbs.db

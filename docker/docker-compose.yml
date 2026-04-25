@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: xxgwy
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/Dockerfile.backend
+    ports:
+      - "3000:3000"
+    environment:
+      APP_SERVER__HOST: "0.0.0.0"
+      APP_SERVER__PORT: "3000"
+      APP_DATABASE__URL: "postgres://postgres:YOUR_DB_PASSWORD@postgres:5432/xxgwy"
+      APP_DATABASE__MAX_CONNECTIONS: "10"
+      APP_REDIS__URL: "redis://redis:6379"
+      APP_JWT__SECRET: "change-me-in-production"
+      APP_JWT__EXPIRATION_HOURS: "24"
+      RUST_LOG: "info"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  pgdata:

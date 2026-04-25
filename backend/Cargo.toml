@@ -1,0 +1,41 @@
+[package]
+name = "xxgwy-backend"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+axum = "0.8"
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sea-orm = { version = "1", features = ["sqlx-postgres", "runtime-tokio", "macros"] }
+redis = { version = "0.28", features = ["tokio-comp"] }
+jsonwebtoken = "9"
+argon2 = "0.5"
+config = "0.15"
+dotenvy = "0.15"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing = "0.1"
+thiserror = "2"
+anyhow = "1"
+validator = { version = "0.19", features = ["derive"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+utoipa = { version = "5", features = ["axum_extras"] }
+utoipa-swagger-ui = { version = "9", features = ["axum"] }
+axum-extra = { version = "0.10", features = ["typed-header"] }
+futures = "0.3"
+
+[dev-dependencies]
+sea-orm-migration = "1"
+
+[lints.clippy]
+all = "deny"
+pedantic = "warn"
+nursery = "warn"
+correctness = "deny"
+style = "warn"
+complexity = "warn"
+perf = "warn"
