@@ -9,9 +9,11 @@
     "build:weapp": "taro build --type weapp",
     "build:h5": "taro build --type h5",
     "lint": "eslint . --ext .ts,.tsx",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postinstall": "weapp-tw patch"
   },
   "dependencies": {
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
     "@tarojs/components": "4.0.0",
     "@tarojs/plugin-framework-react": "4.0.0",
     "@tarojs/react": "4.0.0",
@@ -22,12 +24,23 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.28.6",
+    "@babel/preset-env": "^7.29.2",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
+    "@tailwindcss/postcss": "^4.2.4",
     "@tarojs/cli": "4.0.0",
+    "@tarojs/plugin-platform-h5": "^4.2.0",
     "@tarojs/webpack5-runner": "4.0.0",
     "@types/react": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
+    "babel-preset-taro": "^4.2.0",
     "eslint": "^8.57.1",
-    "typescript": "^5.3.0"
+    "postcss": "^8.5.10",
+    "tailwindcss": "^4.2.4",
+    "typescript": "^5.3.0",
+    "weapp-tailwindcss": "^4.11.2",
+    "webpack": "^5.91.0"
   }
 }
