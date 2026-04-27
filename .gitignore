@@ -25,8 +25,13 @@ dist/
 .vscode/
 *.iml
 
-# Factory
+# Factory (except skills which should be tracked)
 .factory/
+!.factory/skills/
+.factory/skills/*/env/*.env
+
+# Claude Skills - env files contain APIFOX_ACCESS_TOKEN
+.claude/skills/*/env/*.env
 
 # OS
 .DS_Store

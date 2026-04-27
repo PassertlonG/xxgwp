@@ -1,36 +1,28 @@
-package com.xxgwy.modules.dealer.entity
+package com.xxgwy.modules.product.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
-import com.xxgwy.modules.user.entity.User
 import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
-@Table(name = "dealers")
-class Dealer {
+@Table(name = "categories")
+class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @JdbcTypeCode(SqlTypes.UUID)
     var id: UUID? = null
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    var user: User? = null
-
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 50, unique = true)
     var name: String = ""
 
-    @Column(length = 20)
-    var phone: String? = null
-
     @Column(length = 200)
-    var address: String? = null
+    var description: String? = null
 
-    @Column(length = 100)
-    var contactPerson: String? = null
+    @Column(nullable = false)
+    var sortOrder: Int = 0
 
     @Column(nullable = false)
     var enabled: Boolean = true

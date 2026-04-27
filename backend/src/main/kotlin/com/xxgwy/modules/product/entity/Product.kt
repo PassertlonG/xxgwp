@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 import java.math.BigDecimal
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
@@ -21,18 +22,43 @@ class Product {
     @Column(columnDefinition = "TEXT")
     var description: String? = null
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    var price: BigDecimal = BigDecimal.ZERO
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    var category: Category? = null
+
+    @Column(nullable = false, length = 200)
+    var imageUrl: String = ""
+
+    @ElementCollection
+    @CollectionTable(name = "product_images", joinColumns = [JoinColumn(name = "product_id")])
+    @Column(name = "image_url", length = 500)
+    var images: MutableList<String> = mutableListOf()
 
     @Column(nullable = false)
-    var stock: Int = 0
+    var hasSpecs: Boolean = false
 
-    @Column(nullable = false, length = 50)
-    var category: String = ""
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    var status: ProductStatus = ProductStatus.DRAFT
 
-    @Column(length = 500)
-    var imageUrl: String? = null
+    @Column(name = "created_at", updatable = false)
+    var createdAt: LocalDateTime? = null
 
-    @Column(nullable = false)
-    var enabled: Boolean = true
+    @Column(name = "updated_at")
+    var updatedAt: LocalDateTime? = null
+
+    @PrePersist
+    fun prePersist() {
+        createdAt = LocalDateTime.now()
+        updatedAt = LocalDateTime.now()
+    }
+
+    @PreUpdate
+    fun preUpdate() {
+        updatedAt = LocalDateTime.now()
+    }
+
+    enum class ProductStatus {
+        DRAFT, ENABLED, DISABLED
+    }
 }
