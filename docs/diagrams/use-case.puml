@@ -1,0 +1,54 @@
+@startuml 用例图
+left to right direction
+skinparam packageStyle rectangle
+
+actor 消费者 as Consumer
+actor 管理员 as Admin
+
+rectangle "湘西果王油商城" {
+  usecase "浏览商品分类" as UC1
+  usecase "查看商品列表" as UC2
+  usecase "查看商品详情" as UC3
+  usecase "立即购买" as UC4
+  usecase "选择/新增收货地址" as UC5
+  usecase "确认支付" as UC6
+  usecase "查看订单列表" as UC7
+  usecase "查看订单详情" as UC8
+  usecase "查看物流轨迹" as UC9
+  usecase "确认收货" as UC10
+  usecase "申请退款" as UC11
+  usecase "微信授权登录" as UC12
+  usecase "管理个人信息" as UC13
+
+  usecase "管理商品" as UA1
+  usecase "管理分类" as UA2
+  usecase "管理库存" as UA3
+  usecase "查看订单列表" as UA4
+  usecase "发货（填物流）" as UA5
+  usecase "审核退款" as UA6
+  usecase "登录后台" as UA7
+}
+
+Consumer --> UC1
+Consumer --> UC2
+Consumer --> UC3
+Consumer --> UC4
+Consumer --> UC5
+Consumer --> UC6
+Consumer --> UC7
+Consumer --> UC8
+Consumer --> UC9
+Consumer --> UC10
+Consumer --> UC11
+Consumer --> UC12
+Consumer --> UC13
+
+Admin --> UA1
+Admin --> UA2
+Admin --> UA3
+Admin --> UA4
+Admin --> UA5
+Admin --> UA6
+Admin --> UA7
+
+@enduml
