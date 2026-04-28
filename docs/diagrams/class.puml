@@ -1,0 +1,146 @@
+@startuml 核心数据实体关系图
+
+!define PK <color:blue><b>PK</b></color>
+!define FK <color:green><b>FK</b></color>
+
+entity "users" as User {
+  id : UUID PK
+  --
+  openid : VARCHAR(64) UK
+  phone : VARCHAR(20)
+  nickname : VARCHAR(50)
+  avatar : VARCHAR(200)
+  role : ENUM(CUSTOMER, ADMIN)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "addresses" as Address {
+  id : UUID PK
+  --
+  user_id : UUID FK
+  name : VARCHAR(20)
+  phone : VARCHAR(20)
+  province : VARCHAR(20)
+  city : VARCHAR(20)
+  district : VARCHAR(20)
+  detail : VARCHAR(200)
+  is_default : BOOLEAN
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "categories" as Category {
+  id : UUID PK
+  --
+  parent_id : UUID FK
+  name : VARCHAR(50)
+  description : VARCHAR(200)
+  sort_order : INT
+  enabled : BOOLEAN
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "products" as Product {
+  id : UUID PK
+  --
+  category_id : UUID FK
+  name : VARCHAR(100)
+  description : TEXT
+  images : TEXT[]
+  status : ENUM
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "product_skus" as Sku {
+  id : UUID PK
+  --
+  product_id : UUID FK
+  name : VARCHAR(100)
+  price : DECIMAL(10,2)
+  stock : INT
+  image_url : VARCHAR(200)
+  sort_order : INT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "orders" as Order {
+  id : UUID PK
+  --
+  user_id : UUID FK
+  order_no : VARCHAR(32) UK
+  status : ENUM
+  total_amount : DECIMAL(10,2)
+  discount_amount : DECIMAL(10,2)
+  pay_amount : DECIMAL(10,2)
+  address_snapshot : JSON
+  paid_at : TIMESTAMP
+  confirm_at : TIMESTAMP
+  cancel_reason : VARCHAR(200)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "order_items" as OrderItem {
+  id : UUID PK
+  --
+  order_id : UUID FK
+  product_id : UUID
+  sku_id : UUID
+  product_name : VARCHAR(100)
+  sku_name : VARCHAR(100)
+  price : DECIMAL(10,2)
+  quantity : INT
+  subtotal : DECIMAL(10,2)
+}
+
+entity "return_orders" as ReturnOrder {
+  id : UUID PK
+  --
+  return_no : VARCHAR(32) UK
+  order_id : UUID FK
+  order_item_id : UUID FK
+  refund_type : ENUM
+  refund_reason : VARCHAR(500)
+  refund_amount : DECIMAL(10,2)
+  evidence_images : TEXT[]
+  status : ENUM
+  reviewed_by : UUID FK
+  review_comment : VARCHAR(200)
+  reviewed_at : TIMESTAMP
+  completed_at : TIMESTAMP
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "delivery_orders" as DeliveryOrder {
+  id : UUID PK
+  --
+  delivery_no : VARCHAR(32) UK
+  order_id : UUID FK
+  express_company : VARCHAR(50)
+  express_no : VARCHAR(50)
+  status : ENUM
+  shipped_at : TIMESTAMP
+  delivered_at : TIMESTAMP
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+User ||--o{ Address
+Category ||--o{ Category : parent
+Category ||--o{ Product
+Product ||--o{ Sku
+User ||--o{ Order
+Order ||--o{ OrderItem
+Sku ||--o{ OrderItem
+Product ||--o{ OrderItem
+Order ||--o{ ReturnOrder
+OrderItem ||--o{ ReturnOrder
+User ||--o{ ReturnOrder : reviewer
+Order ||--o{ DeliveryOrder
+
+@enduml

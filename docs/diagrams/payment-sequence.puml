@@ -1,0 +1,40 @@
+@startuml 支付序列图
+
+actor 消费者 as User
+participant 小程序 as MiniApp
+participant "后端服务" as Server
+participant Redis as Redis
+participant 微信支付 as WeChat
+participant 数据库 as DB
+
+User -> MiniApp: 点击"去支付"
+MiniApp -> Server: POST /api/orders (创建订单)
+Server -> Redis: 尝试扣减 SKU 库存\n(原子操作)
+Redis --> Server: 扣减成功
+Server -> DB: INSERT order + order_items
+DB --> Server: 订单创建成功
+Server -> WeChat: 统一下单 API
+note right: 传入订单号、金额、openid
+WeChat --> Server: 返回 prepay_id
+Server --> MiniApp: 返回支付参数\n(prepay_id, sign, ...)
+MiniApp -> WeChat: 唤起微信支付弹窗\n(参数签名)
+User -> MiniApp: 输入密码/指纹确认
+MiniApp -> WeChat: 发起支付
+WeChat -> WeChat: 验证签名、扣款
+WeChat --> MiniApp: 支付结果
+MiniApp -> Server: 支付结果页跳转
+
+alt 支付成功回调
+  WeChat -> Server: POST /api/orders/wx-notify
+  note right: 幂等处理\n(微信支付单号防重)
+  Server -> DB: 更新订单状态 → 已支付
+  Server --> WeChat: 返回 SUCCESS
+end
+
+alt 支付失败/未支付
+  Server -> Server: 30分钟超时检查
+  Server -> Redis: 释放库存
+  Server -> DB: 订单状态 → 已取消
+end
+
+@enduml
